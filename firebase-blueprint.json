@@ -1,0 +1,80 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Basic profile for all users.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["client", "counselor"] },
+        "createdAt": { "type": "string" },
+        "photoURL": { "type": "string" }
+      },
+      "required": ["uid", "fullName", "email", "role", "createdAt"]
+    },
+    "CounselorProfile": {
+      "title": "Counselor Profile",
+      "description": "Extended information for counselors.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "specialization": { "type": "string" },
+        "bio": { "type": "string" },
+        "hourlyRate": { "type": "number" },
+        "isVerified": { "type": "boolean" },
+        "availability": { "type": "object" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "integer" }
+      },
+      "required": ["userId", "specialization", "bio", "hourlyRate", "isVerified"]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "description": "A scheduled consultation session.",
+      "type": "object",
+      "properties": {
+        "clientId": { "type": "string" },
+        "counselorId": { "type": "string" },
+        "startTime": { "type": "string", "format": "date-time" },
+        "endTime": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "completed", "cancelled"] },
+        "paymentStatus": { "type": "string", "enum": ["unpaid", "paid"] },
+        "amount": { "type": "number" },
+        "meetingLink": { "type": "string" }
+      },
+      "required": ["clientId", "counselorId", "startTime", "endTime", "status", "paymentStatus", "amount"]
+    },
+    "ChatMessage": {
+      "title": "Chat Message",
+      "description": "Messages exchanged between client and counselor.",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "appointmentId": { "type": "string" }
+      },
+      "required": ["senderId", "text", "timestamp", "appointmentId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Main user records."
+    },
+    "/counselorProfiles/{profileId}": {
+      "schema": "CounselorProfile",
+      "description": "Counselor-specific metadata."
+    },
+    "/appointments/{appointmentId}": {
+      "schema": "Appointment",
+      "description": "Consultation bookings."
+    },
+    "/appointments/{appointmentId}/messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Chat transcript for a specific appointment."
+    }
+  }
+}
